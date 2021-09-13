@@ -2,6 +2,7 @@ package com.senla.hotel.service;
 
 import com.senla.hotel.api.dao.IRoomDao;
 import com.senla.hotel.api.service.IRoomService;
+import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,13 @@ public class RoomService implements IRoomService {
 
     @Override
     public Room getById(Long id) {
-        return roomDao.getById(id);
+        Room room = roomDao.getById(id);
+
+        if(room == null){
+            throw  new NoSuchEntityException("There is no Room with ID = " + id + " in Database");
+        }
+
+        return room;
     }
 
     @Override
@@ -48,6 +55,12 @@ public class RoomService implements IRoomService {
 
     @Override
     public void deleteById(Long id) {
+        Room room = roomDao.getById(id);
+        if (room == null) {
+            throw new NoSuchEntityException("There is no room with ID = "
+                    + id + " in Database");
+        }
+
         roomDao.deleteById(id);
     }
 

@@ -2,6 +2,7 @@ package com.senla.hotel.service;
 
 import com.senla.hotel.api.dao.IGuestDao;
 import com.senla.hotel.api.service.IGuestService;
+import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Guest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,11 @@ public class GuestService implements IGuestService {
 
     @Override
     public Guest getById(Long id) {
-        return guestDao.getById(id);
+        Guest guest = guestDao.getById(id);
+        if(guest == null){
+            throw  new NoSuchEntityException("There is no Guest with ID = " + id + " in Database");
+        }
+        return guest;
     }
 
     @Override
@@ -48,6 +53,13 @@ public class GuestService implements IGuestService {
 
     @Override
     public void deleteById(Long id) {
+        Guest guest = guestDao.getById(id);
+
+        if (guest == null) {
+            throw new NoSuchEntityException("There is no Guest with ID = "
+                    + id + " in Database");
+        }
+
         guestDao.deleteById(id);
     }
 

@@ -3,17 +3,18 @@ package com.senla.hotel.model.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senla.hotel.model.entities.enums.RoomStars;
 import com.senla.hotel.model.entities.enums.RoomStatus;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "rooms")
 public class Room extends AEntity {
-
-    public Room() {
-    }
 
     @Column(name = "number")
     private Integer number;
@@ -35,7 +36,6 @@ public class Room extends AEntity {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "room")
-    @JsonIgnore
     private List<Order> orders = new ArrayList<>();
 
     public Room(Integer number, Integer capacity, Double price, RoomStars stars) {
@@ -62,54 +62,6 @@ public class Room extends AEntity {
             orders.add(order);
             order.setRoom(this);
         }
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
-
-    public RoomStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RoomStatus status) {
-        this.status = status;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public RoomStars getStars() {
-        return stars;
-    }
-
-    public void setStars(RoomStars stars) {
-        this.stars = stars;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 
     @Override

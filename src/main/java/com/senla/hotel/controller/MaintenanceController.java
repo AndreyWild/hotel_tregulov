@@ -1,57 +1,58 @@
 package com.senla.hotel.controller;
 
 import com.senla.hotel.api.service.IMaintenanceService;
-import com.senla.hotel.exceptions.NoSuchEntityException;
+import com.senla.hotel.dto.MaintenanceDto;
 import com.senla.hotel.model.entities.Maintenance;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Log4j
 @RestController
 @RequestMapping("/maintenances")
+@RequiredArgsConstructor
 public class MaintenanceController {
 
-    @Autowired
-    IMaintenanceService maintenanceService;
+    private final IMaintenanceService maintenanceService;
 
-    @GetMapping("/maintenances")
-    public List<Maintenance> getAll(){
-        List<Maintenance> allMaintenance = maintenanceService.getAll();
-        return allMaintenance;
+    @GetMapping
+    public List<MaintenanceDto> getAll() {
+        log.info("Received request (GET): /maintenances");
+        return maintenanceService.getAll().stream().map(MaintenanceDto::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/maintenances/{id}")
-    public Maintenance getById(@PathVariable Long id){
-        Maintenance room = maintenanceService.getById(id);
-
-        if(room == null){
-            throw  new NoSuchEntityException("There is no Maintenance with ID = " + id + " in Database");
-        }
-
-        return room;
+    @GetMapping("/{id}")
+    public MaintenanceDto getById(@PathVariable Long id) {
+        log.info("Received request (GET): /maintenances/" + id);
+        return new MaintenanceDto(maintenanceService.getById(id));
     }
 
-    @PostMapping("/maintenances")
-    public Maintenance save(@RequestBody Maintenance maintenance) {
-        maintenanceService.save(maintenance);
-        return maintenance;
+    @PostMapping
+    public MaintenanceDto save(@RequestBody MaintenanceDto maintenanceDto) {
+        log.info("Received request (POST): /maintenances");
+        Maintenance maintenance = new Maintenance();
+        maintenance.setName(maintenanceDto.getName());
+        maintenance.setPrice(maintenanceDto.getPrice());
+        return new MaintenanceDto(maintenanceService.save(maintenance));
     }
 
-    @PutMapping("/maintenances")
-    public Maintenance update(@RequestBody Maintenance maintenance) {
+    @PutMapping
+    public MaintenanceDto update(@RequestBody MaintenanceDto maintenanceDto) {
+        log.info("Received request (PUT): /maintenances");
+        Maintenance maintenance = new Maintenance();
+        maintenance.setId(maintenanceDto.getId());
+        maintenance.setName(maintenanceDto.getName());
+        maintenance.setPrice(maintenanceDto.getPrice());
         maintenanceService.update(maintenance);
-        return maintenance;
+        return maintenanceDto;
     }
 
-    @DeleteMapping("/maintenances/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        Maintenance maintenance = maintenanceService.getById(id);
-        if (maintenance == null) {
-            throw new NoSuchEntityException("There is no maintenance with ID = "
-                    + id + " in Database");
-        }
-
+        log.info("Received request (DELETE): /maintenances/" + id);
         maintenanceService.deleteById(id);
         return "Maintenance with ID = " + id + " was deleted";
     }

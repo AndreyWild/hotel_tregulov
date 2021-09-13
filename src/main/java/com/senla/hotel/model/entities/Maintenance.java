@@ -1,12 +1,15 @@
 package com.senla.hotel.model.entities;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "maintenances")
 public class Maintenance extends AEntity {
-    public Maintenance() {
-    }
 
     @Column(name = "name")
     private String name;
@@ -23,22 +26,6 @@ public class Maintenance extends AEntity {
         setId(maintenance.getId());
         this.name = maintenance.getName();
         this.price = maintenance.getPrice();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
     }
 
     @Override

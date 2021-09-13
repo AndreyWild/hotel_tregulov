@@ -2,6 +2,7 @@ package com.senla.hotel.service;
 
 import com.senla.hotel.api.dao.IOrderDao;
 import com.senla.hotel.api.service.IOrderService;
+import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,13 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order getById(Long id) {
-        return orderDao.getById(id);
+        Order order = orderDao.getById(id);
+
+        if(order == null){
+            throw  new NoSuchEntityException("There is no Order with ID = " + id + " in Database");
+        }
+
+        return order;
     }
 
     @Override
@@ -48,6 +55,11 @@ public class OrderService implements IOrderService {
 
     @Override
     public void deleteById(Long id) {
+        Order order = orderDao.getById(id);
+        if (order == null) {
+            throw new NoSuchEntityException("There is no order with ID = "
+                    + id + " in Database");
+        }
         orderDao.deleteById(id);
     }
 

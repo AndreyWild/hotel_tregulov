@@ -1,6 +1,7 @@
 package com.senla.hotel.configuration;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -59,4 +60,11 @@ public class MyConfig {
 
         return transactionManager;
     }
+
+    @Bean
+    public ModelMapper getModelMapper(){
+        return new ModelMapper();
+    }
+
+
 }

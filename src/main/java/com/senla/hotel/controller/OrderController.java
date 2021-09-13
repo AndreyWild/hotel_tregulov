@@ -1,62 +1,56 @@
 package com.senla.hotel.controller;
 
-
 import com.senla.hotel.api.service.IOrderService;
 import com.senla.hotel.dto.OrderDto;
-import com.senla.hotel.exceptions.NoSuchEntityException;
-import com.senla.hotel.mappers.OrderMapper;
 import com.senla.hotel.model.entities.Order;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Log4j
 @RestController
 @RequestMapping("/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
-    @Autowired
-    IOrderService orderService;
+    private final IOrderService orderService;
+    private final ModelMapper modelMapper;
 
-    @GetMapping("/orders")
-    public List<Order> getAll(){
-        List<Order> allOrders = orderService.getAll();
-        return allOrders;
+    @GetMapping
+    public List<OrderDto> getAll(){
+        log.info("Received request (GET): /orders");
+        return orderService.getAll().stream().map(OrderDto::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/orders/{id}")
+
+    @GetMapping("/{id}")
     public OrderDto getById(@PathVariable Long id){
-        Order order = orderService.getById(id);
-
-        if(order == null){
-            throw  new NoSuchEntityException("There is no Order with ID = " + id + " in Database");
-        }
-
-        return new OrderDto(order);
+        log.info("Received request (GET): /orders/" + id);
+        return new OrderDto(orderService.getById(id));
     }
 
-    @PostMapping("/orders")
+    @PostMapping
     public Order save(@RequestBody Order order) {
+        log.info("Received request (POST): /orders");
         orderService.save(order);
         return order;
     }
 
-    @PutMapping("/orders")
+    @PutMapping
     public Order update(@RequestBody Order order) {
+        log.info("Received request (PUT): /orders");
         orderService.update(order);
         return order;
     }
 
-    @DeleteMapping("/orders/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        Order order = orderService.getById(id);
-        if (order == null) {
-            throw new NoSuchEntityException("There is no order with ID = "
-                    + id + " in Database");
-        }
-
+        log.info("Received request (DELETE): /orders/" + id);
         orderService.deleteById(id);
         return "Order with ID = " + id + " was deleted";
     }
-
 }

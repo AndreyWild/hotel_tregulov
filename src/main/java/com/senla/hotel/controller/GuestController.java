@@ -2,68 +2,56 @@ package com.senla.hotel.controller;
 
 import com.senla.hotel.api.service.IGuestService;
 import com.senla.hotel.dto.GuestDto;
-import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Guest;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j
 @RestController
 @RequestMapping("/guests")
+@RequiredArgsConstructor
 public class GuestController {
 
-    @Autowired
-    IGuestService guestService;
+    /* Mapping through ModelMapper */
 
-    @GetMapping("/guests")
-    public List<GuestDto> getAll(){
-        return guestService.getAll().stream().map(GuestDto::new).collect(Collectors.toList());
+    private final IGuestService guestService;
+    private final ModelMapper modelMapper;
+
+    @GetMapping
+    public List<GuestDto> getAll(/*@RequestParam(value = "sort", defaultValue = "name", required=false) String name*/){
+        log.info("Received request (GET): /guests");
+        return guestService.getAll().stream().map(guest -> modelMapper.map(guest, GuestDto.class)).collect(Collectors.toList());
     }
 
-    @GetMapping("/guests/{id}")
+    @GetMapping("/{id}")
     public GuestDto getById(@PathVariable Long id){
-        Guest guest = guestService.getById(id);
-
-        if(guest == null){
-            throw  new NoSuchEntityException("There is no Guest with ID = " + id + " in Database");
-        }
-
-        return new GuestDto(guest);
+        log.info("Received request (GET): /guests/" + id);
+        return modelMapper.map(guestService.getById(id), GuestDto.class);
     }
 
-    @PostMapping("/guests")
+    @PostMapping
     public GuestDto save(@RequestBody GuestDto guestDto) {
-        Guest guest = new Guest();
-        guest.setName(guestDto.getName());
-        guest.setAge(guestDto.getAge());
-        return new GuestDto(guestService.save(guest));
+        log.info("Received request (POST): /guests");
+        Guest guest = guestService.save(modelMapper.map(guestDto, Guest.class));
+        return modelMapper.map(guest, GuestDto.class);
     }
 
-    @PutMapping("/guests")
+    @PutMapping
     public GuestDto update(@RequestBody GuestDto guestDto) {
-        Guest guest = new Guest();
-        guest.setId(guestDto.getId());
-        guest.setName(guestDto.getName());
-        guest.setAge(guestDto.getAge());
-        guestService.update(guest);
+        log.info("Received request (PUT): /guests");
+        guestService.update(modelMapper.map(guestDto, Guest.class));
         return guestDto;
     }
 
-    @DeleteMapping("/guests/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        Guest guest = guestService.getById(id);
-        if (guest == null) {
-            throw new NoSuchEntityException("There is no guest with ID = "
-                    + id + " in Database");
-        }
-
+        log.info("Received request (DELETE): /guests/" + id);
         guestService.deleteById(id);
         return "Guest with ID = " + id + " was deleted";
     }
-
-
-
-
 }

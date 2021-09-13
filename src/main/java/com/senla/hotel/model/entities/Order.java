@@ -1,28 +1,30 @@
 package com.senla.hotel.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.senla.hotel.model.entities.enums.OrderStatus;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order extends AEntity {
-    public Order() {
-    }
 
     //todo persist вместо save если нету REMOVE!!!
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_guest")
     private Guest guest;
 
     //todo persist вместо save если нету REMOVE!!!
 
-    @ManyToOne(fetch = FetchType.LAZY
+    @ManyToOne(fetch = FetchType.EAGER
             /*cascade = CascadeType.REMOVE,
             optional = false*/)
     @JoinColumn(name = "id_room")
@@ -92,54 +94,6 @@ public class Order extends AEntity {
         } else {
             maintenances.add(maintenance);
         }
-    }
-
-    public Guest getGuest() {
-        return guest;
-    }
-
-    public void setGuest(Guest guest) {
-        this.guest = guest;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public List<Maintenance> getMaintenances() {
-        return maintenances;
-    }
-
-    public void setMaintenances(List<Maintenance> maintenances) {
-        this.maintenances = maintenances;
-    }
-
-    public LocalDate getCheckIn() {
-        return checkIn;
-    }
-
-    public void setCheckIn(LocalDate checkIn) {
-        this.checkIn = checkIn;
-    }
-
-    public LocalDate getCheckOut() {
-        return checkOut;
-    }
-
-    public void setCheckOut(LocalDate checkOut) {
-        this.checkOut = checkOut;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
     }
 
     @Override

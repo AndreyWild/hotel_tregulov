@@ -1,57 +1,65 @@
 package com.senla.hotel.controller;
 
 import com.senla.hotel.api.service.IRoomService;
-import com.senla.hotel.exceptions.NoSuchEntityException;
+import com.senla.hotel.dto.RoomDto;
 import com.senla.hotel.model.entities.Room;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Log4j
 @RestController
 @RequestMapping("/rooms")
+@RequiredArgsConstructor
 public class RoomController {
 
-    @Autowired
-    IRoomService roomService;
+    private final IRoomService roomService;
 
-    @GetMapping("/rooms")
-    public List<Room> getAll(){
-        List<Room> allRooms = roomService.getAll();
-        return allRooms;
+    @GetMapping
+    public List<RoomDto> getAll() {
+        log.info("Received request (GET): /room");
+        return roomService.getAll().stream().map(RoomDto::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/rooms/{id}")
-    public Room getById(@PathVariable Long id){
-        Room room = roomService.getById(id);
-
-        if(room == null){
-            throw  new NoSuchEntityException("There is no Room with ID = " + id + " in Database");
-        }
-
-        return room;
+    @GetMapping("/{id}")
+    public RoomDto getById(@PathVariable Long id) {
+        log.info("Received request (GET): /rooms/" + id);
+        return new RoomDto(roomService.getById(id));
     }
 
-    @PostMapping("/rooms")
-    public Room save(@RequestBody Room room) {
+    @PostMapping
+    public RoomDto save(@RequestBody RoomDto roomDto) {
+        log.info("Received request (POST): /rooms");
+        Room room = new Room();
+        room.setNumber(roomDto.getNumber());
+        room.setCapacity(roomDto.getCapacity());
+        room.setStatus(roomDto.getStatus());
+        room.setPrice(roomDto.getPrice());
+        room.setStars(roomDto.getStars());
         roomService.save(room);
-        return room;
+        return new RoomDto(room);
     }
 
-    @PutMapping("/rooms")
-    public Room update(@RequestBody Room room) {
+    @PutMapping
+    public RoomDto update(@RequestBody RoomDto roomDto) {
+        log.info("Received request (PUT): /rooms");
+        Room room = new Room();
+        room.setId(roomDto.getId());
+        room.setNumber(roomDto.getNumber());
+        room.setCapacity(roomDto.getCapacity());
+        room.setStatus(roomDto.getStatus());
+        room.setPrice(roomDto.getPrice());
+        room.setStars(roomDto.getStars());
         roomService.update(room);
-        return room;
+        return roomDto;
     }
 
-    @DeleteMapping("/rooms/{id}")
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        Room room = roomService.getById(id);
-        if (room == null) {
-            throw new NoSuchEntityException("There is no room with ID = "
-                    + id + " in Database");
-        }
-
+        log.info("Received request (DELETE): /rooms/" + id);
         roomService.deleteById(id);
         return "Room with ID = " + id + " was deleted";
     }
