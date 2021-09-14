@@ -2,8 +2,11 @@ package com.senla.hotel.service;
 
 import com.senla.hotel.api.dao.IRoomDao;
 import com.senla.hotel.api.service.IRoomService;
+import com.senla.hotel.dto.RoomDto;
 import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Room;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +15,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class RoomService implements IRoomService {
 
-    @Autowired
-    private IRoomDao roomDao;
-
-    @Autowired
-    public RoomService(IRoomDao roomDao) {
-        this.roomDao = roomDao;
-    }
+    private final IRoomDao roomDao;
+    private final ModelMapper modelMapper;
 
     @Override
     public Room save(Room entity) {
@@ -28,14 +27,14 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public Room getById(Long id) {
+    public RoomDto getById(Long id) {
         Room room = roomDao.getById(id);
 
         if(room == null){
             throw  new NoSuchEntityException("There is no Room with ID = " + id + " in Database");
         }
 
-        return room;
+        return modelMapper.map(room, RoomDto.class);
     }
 
     @Override

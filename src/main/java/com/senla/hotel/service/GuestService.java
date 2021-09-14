@@ -2,8 +2,12 @@ package com.senla.hotel.service;
 
 import com.senla.hotel.api.dao.IGuestDao;
 import com.senla.hotel.api.service.IGuestService;
+import com.senla.hotel.dto.GuestDto;
 import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Guest;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,15 +16,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class GuestService implements IGuestService {
 
-    @Autowired
-    private IGuestDao guestDao;
-
-    @Autowired
-    public GuestService(IGuestDao guestDao) {
-        this.guestDao = guestDao;
-    }
+    private final IGuestDao guestDao;
+    private final ModelMapper modelMapper;
 
     @Override
     public Guest save(Guest entity) {
@@ -28,12 +28,12 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public Guest getById(Long id) {
+    public GuestDto getById(Long id) {
         Guest guest = guestDao.getById(id);
         if(guest == null){
             throw  new NoSuchEntityException("There is no Guest with ID = " + id + " in Database");
         }
-        return guest;
+        return modelMapper.map(guest, GuestDto.class);
     }
 
     @Override

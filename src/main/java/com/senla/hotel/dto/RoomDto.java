@@ -1,5 +1,6 @@
 package com.senla.hotel.dto;
 
+import com.senla.hotel.model.entities.AEntity;
 import com.senla.hotel.model.entities.Room;
 import com.senla.hotel.model.entities.enums.RoomStars;
 import com.senla.hotel.model.entities.enums.RoomStatus;
@@ -10,9 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RoomDto {
+public class RoomDto extends AEntity {
 
-    private Long id;
     private Integer number;
     private Integer capacity;
     private RoomStatus status;

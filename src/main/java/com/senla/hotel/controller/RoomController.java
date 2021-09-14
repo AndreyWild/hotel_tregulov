@@ -27,7 +27,7 @@ public class RoomController {
     @GetMapping("/{id}")
     public RoomDto getById(@PathVariable Long id) {
         log.info("Received request (GET): /rooms/" + id);
-        return new RoomDto(roomService.getById(id));
+        return roomService.getById(id);
     }
 
     @PostMapping

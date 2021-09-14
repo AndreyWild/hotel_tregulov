@@ -2,10 +2,12 @@ package com.senla.hotel.service;
 
 import com.senla.hotel.api.dao.IMaintenanceDao;
 import com.senla.hotel.api.service.IMaintenanceService;
+import com.senla.hotel.dto.MaintenanceDto;
 import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Maintenance;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,15 +16,11 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class MaintenanceService implements IMaintenanceService {
 
-    @Autowired
     private IMaintenanceDao maintenanceDao;
-
-    @Autowired
-    public MaintenanceService(IMaintenanceDao maintenanceDao) {
-        this.maintenanceDao = maintenanceDao;
-    }
+    private final ModelMapper modelMapper;
 
     @Override
     public Maintenance save(Maintenance entity) {
@@ -30,14 +28,14 @@ public class MaintenanceService implements IMaintenanceService {
     }
 
     @Override
-    public Maintenance getById(Long id) {
+    public MaintenanceDto getById(Long id) {
         Maintenance maintenance = maintenanceDao.getById(id);
 
         if(maintenance == null){
             throw  new NoSuchEntityException("There is no Maintenance with ID = " + id + " in Database");
         }
 
-        return maintenance;
+        return modelMapper.map(maintenance, MaintenanceDto.class);
     }
 
     @Override

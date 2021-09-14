@@ -27,7 +27,7 @@ public class MaintenanceController {
     @GetMapping("/{id}")
     public MaintenanceDto getById(@PathVariable Long id) {
         log.info("Received request (GET): /maintenances/" + id);
-        return new MaintenanceDto(maintenanceService.getById(id));
+        return maintenanceService.getById(id);
     }
 
     @PostMapping

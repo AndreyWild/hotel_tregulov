@@ -30,7 +30,7 @@ public class OrderController {
     @GetMapping("/{id}")
     public OrderDto getById(@PathVariable Long id){
         log.info("Received request (GET): /orders/" + id);
-        return new OrderDto(orderService.getById(id));
+        return orderService.getById(id);
     }
 
     @PostMapping

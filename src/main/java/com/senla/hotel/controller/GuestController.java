@@ -31,7 +31,7 @@ public class GuestController {
     @GetMapping("/{id}")
     public GuestDto getById(@PathVariable Long id){
         log.info("Received request (GET): /guests/" + id);
-        return modelMapper.map(guestService.getById(id), GuestDto.class);
+        return guestService.getById(id);
     }
 
     @PostMapping

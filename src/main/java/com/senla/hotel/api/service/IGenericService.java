@@ -4,11 +4,11 @@ import com.senla.hotel.model.entities.AEntity;
 
 import java.util.List;
 
-public interface IGenericService<T extends AEntity> {
+public interface IGenericService<T,Y extends AEntity> {
 
     T save(T entity);
 
-    T getById(Long id);
+    Y getById(Long id);
 
     List<T> getAll();
 

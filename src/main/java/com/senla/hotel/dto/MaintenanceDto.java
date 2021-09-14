@@ -1,5 +1,6 @@
 package com.senla.hotel.dto;
 
+import com.senla.hotel.model.entities.AEntity;
 import com.senla.hotel.model.entities.Maintenance;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MaintenanceDto {
+public class MaintenanceDto extends AEntity {
 
-    private Long id;
     private String name;
     private Double price;
 
