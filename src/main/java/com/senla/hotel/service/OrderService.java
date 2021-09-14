@@ -7,11 +7,11 @@ import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Order;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,24 +22,25 @@ public class OrderService implements IOrderService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Order save(Order entity) {
-        return orderDao.save(entity);
+    public OrderDto save(OrderDto entity) {
+        Order order = orderDao.save(modelMapper.map(entity, Order.class));
+        return modelMapper.map(order, OrderDto.class);
     }
 
     @Override
     public OrderDto getById(Long id) {
         Order order = orderDao.getById(id);
 
-        if(order == null){
-            throw  new NoSuchEntityException("There is no Order with ID = " + id + " in Database");
+        if (order == null) {
+            throw new NoSuchEntityException("There is no Order with ID = " + id + " in Database");
         }
 
         return modelMapper.map(order, OrderDto.class);
     }
 
     @Override
-    public List<Order> getAll() {
-        return orderDao.getAll();
+    public List<OrderDto> getAll() {
+        return orderDao.getAll().stream().map(order -> modelMapper.map(order, OrderDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -68,7 +69,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public void update(Order entity) {
-        orderDao.update(entity);
+    public void update(OrderDto entity) {
+        orderDao.update(modelMapper.map(entity, Order.class));
     }
 }

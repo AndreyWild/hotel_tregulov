@@ -62,9 +62,7 @@ public class MyConfig {
     }
 
     @Bean
-    public ModelMapper getModelMapper(){
+    public ModelMapper getModelMapper() {
         return new ModelMapper();
     }
-
-
 }

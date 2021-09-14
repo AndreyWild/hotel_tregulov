@@ -7,11 +7,11 @@ import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Room;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,24 +22,25 @@ public class RoomService implements IRoomService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Room save(Room entity) {
-        return roomDao.save(entity);
+    public RoomDto save(RoomDto entity) {
+        Room room = roomDao.save(modelMapper.map(entity, Room.class));
+        return modelMapper.map(room, RoomDto.class);
     }
 
     @Override
     public RoomDto getById(Long id) {
         Room room = roomDao.getById(id);
 
-        if(room == null){
-            throw  new NoSuchEntityException("There is no Room with ID = " + id + " in Database");
+        if (room == null) {
+            throw new NoSuchEntityException("There is no Room with ID = " + id + " in Database");
         }
 
         return modelMapper.map(room, RoomDto.class);
     }
 
     @Override
-    public List<Room> getAll() {
-        return roomDao.getAll();
+    public List<RoomDto> getAll() {
+        return roomDao.getAll().stream().map(room -> modelMapper.map(room, RoomDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -69,7 +70,7 @@ public class RoomService implements IRoomService {
     }
 
     @Override
-    public void update(Room entity) {
-        roomDao.update(entity);
+    public void update(RoomDto entity) {
+        roomDao.update(modelMapper.map(entity, Room.class));
     }
 }

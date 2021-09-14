@@ -5,14 +5,13 @@ import com.senla.hotel.api.service.IGuestService;
 import com.senla.hotel.dto.GuestDto;
 import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Guest;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,22 +22,23 @@ public class GuestService implements IGuestService {
     private final ModelMapper modelMapper;
 
     @Override
-    public Guest save(Guest entity) {
-        return guestDao.save(entity);
+    public GuestDto save(GuestDto entity) {
+        Guest guest = guestDao.save(modelMapper.map(entity, Guest.class));
+        return modelMapper.map(guest, GuestDto.class);
     }
 
     @Override
     public GuestDto getById(Long id) {
         Guest guest = guestDao.getById(id);
-        if(guest == null){
-            throw  new NoSuchEntityException("There is no Guest with ID = " + id + " in Database");
+        if (guest == null) {
+            throw new NoSuchEntityException("There is no Guest with ID = " + id + " in Database");
         }
         return modelMapper.map(guest, GuestDto.class);
     }
 
     @Override
-    public List<Guest> getAll() {
-        return guestDao.getAll();
+    public List<GuestDto> getAll() {
+        return guestDao.getAll().stream().map(guest -> modelMapper.map(guest, GuestDto.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class GuestService implements IGuestService {
     }
 
     @Override
-    public void update(Guest entity) {
-        guestDao.update(entity);
+    public void update(GuestDto entity) {
+        guestDao.update(modelMapper.map(entity, Guest.class));
     }
 }

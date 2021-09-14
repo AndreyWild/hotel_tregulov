@@ -2,13 +2,11 @@ package com.senla.hotel.controller;
 
 import com.senla.hotel.api.service.IMaintenanceService;
 import com.senla.hotel.dto.MaintenanceDto;
-import com.senla.hotel.model.entities.Maintenance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j
 @RestController
@@ -21,7 +19,7 @@ public class MaintenanceController {
     @GetMapping
     public List<MaintenanceDto> getAll() {
         log.info("Received request (GET): /maintenances");
-        return maintenanceService.getAll().stream().map(MaintenanceDto::new).collect(Collectors.toList());
+        return maintenanceService.getAll();
     }
 
     @GetMapping("/{id}")
@@ -33,20 +31,13 @@ public class MaintenanceController {
     @PostMapping
     public MaintenanceDto save(@RequestBody MaintenanceDto maintenanceDto) {
         log.info("Received request (POST): /maintenances");
-        Maintenance maintenance = new Maintenance();
-        maintenance.setName(maintenanceDto.getName());
-        maintenance.setPrice(maintenanceDto.getPrice());
-        return new MaintenanceDto(maintenanceService.save(maintenance));
+        return maintenanceService.save(maintenanceDto);
     }
 
     @PutMapping
     public MaintenanceDto update(@RequestBody MaintenanceDto maintenanceDto) {
         log.info("Received request (PUT): /maintenances");
-        Maintenance maintenance = new Maintenance();
-        maintenance.setId(maintenanceDto.getId());
-        maintenance.setName(maintenanceDto.getName());
-        maintenance.setPrice(maintenanceDto.getPrice());
-        maintenanceService.update(maintenance);
+        maintenanceService.update(maintenanceDto);
         return maintenanceDto;
     }
 
