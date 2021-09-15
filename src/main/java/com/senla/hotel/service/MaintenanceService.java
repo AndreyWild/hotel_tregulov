@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MaintenanceService implements IMaintenanceService {
 
-    private IMaintenanceDao maintenanceDao;
+    private final IMaintenanceDao maintenanceDao;
     private final ModelMapper modelMapper;
 
     @Override

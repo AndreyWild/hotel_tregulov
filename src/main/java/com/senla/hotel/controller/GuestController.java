@@ -36,11 +36,6 @@ public class GuestController {
         return guestService.save(guestDto);
     }
 
-    @PostMapping
-    public ResponseEntity<Void> add(@RequestBody GuestDto guestDto) {
-        return ResponseEntity.noContent().build();
-    }
-
     @PutMapping
     public GuestDto update(@RequestBody GuestDto guestDto) {
         log.info("Received request (PUT): /guests");
