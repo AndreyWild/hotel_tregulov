@@ -1,5 +1,7 @@
 package com.senla.hotel.controller;
 
+import com.senla.hotel.api.controller.IGenericController;
+import com.senla.hotel.api.controller.IGuestController;
 import com.senla.hotel.api.service.IGuestService;
 import com.senla.hotel.dto.GuestDto;
 import lombok.RequiredArgsConstructor;
@@ -14,39 +16,46 @@ import java.util.List;
 @RestController
 @RequestMapping("/guests")
 @RequiredArgsConstructor
-public class GuestController {
+public class GuestController extends AbstractController<GuestDto, IGuestService> /*implements IGuestController*/ {
 
-    private final IGuestService guestService;
+    private static final String ENDPOINT = "guests";
 
-    @GetMapping
-    public List<GuestDto> getAll() {
-        log.info("Received request (GET): /guests");
-        return guestService.getAll();
+    @Override
+    protected String getEndPoint() {
+        return ENDPOINT;
     }
 
-    @GetMapping("/{id}")
-    public GuestDto getById(@PathVariable Long id) {
-        log.info("Received request (GET): /guests/" + id);
-        return guestService.getById(id);
-    }
-
-    @PostMapping
-    public GuestDto save(@RequestBody GuestDto guestDto) {
-        log.info("Received request (POST): /guests");
-        return guestService.save(guestDto);
-    }
-
-    @PutMapping
-    public GuestDto update(@RequestBody GuestDto guestDto) {
-        log.info("Received request (PUT): /guests");
-        guestService.update(guestDto);
-        return guestDto;
-    }
-
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable Long id) {
-        log.info("Received request (DELETE): /guests/" + id);
-        guestService.deleteById(id);
-        return "Guest with ID = " + id + " was deleted";
-    }
+//    private final IGuestService guestService;
+//
+//    @GetMapping
+//    public List<GuestDto> getAll() {
+//        log.info("Received request (GET): /guests");
+//        return guestService.getAll();
+//    }
+//
+//    @GetMapping("/{id}")
+//    public GuestDto getById(@PathVariable Long id) {
+//        log.info("Received request (GET): /guests/" + id);
+//        return guestService.getById(id);
+//    }
+//
+//    @PostMapping
+//    public GuestDto save(@RequestBody GuestDto guestDto) {
+//        log.info("Received request (POST): /guests");
+//        return guestService.save(guestDto);
+//    }
+//
+//    @PutMapping
+//    public GuestDto update(@RequestBody GuestDto guestDto) {
+//        log.info("Received request (PUT): /guests");
+//        guestService.update(guestDto);
+//        return guestDto;
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public String delete(@PathVariable Long id) {
+//        log.info("Received request (DELETE): /guests/" + id);
+//        guestService.deleteById(id);
+//        return "Guest with ID = " + id + " was deleted";
+//    }
 }
