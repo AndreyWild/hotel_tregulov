@@ -4,13 +4,13 @@ import com.senla.hotel.model.entities.AEntity;
 
 import java.util.List;
 
-public interface IGenericService<T extends AEntity> {
+public interface IGenericService<T, Y extends AEntity> {
 
-    T save(T entity);
+    Y save(Y entity);
 
-    T getById(Long id);
+    Y getById(Long id);
 
-    List<T> getAll();
+    List<Y> getAll();
 
     public List<T> findAll();
 
@@ -20,5 +20,5 @@ public interface IGenericService<T extends AEntity> {
 
     void deleteAll();
 
-    void update(T entity);
+    void update(Y entity);
 }
