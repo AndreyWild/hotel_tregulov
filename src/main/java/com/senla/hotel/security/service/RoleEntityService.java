@@ -5,8 +5,10 @@ import com.senla.hotel.security.api.service.IRoleEntityService;
 import com.senla.hotel.security.entity.RoleEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class RoleEntityService implements IRoleEntityService {
 
     @Autowired

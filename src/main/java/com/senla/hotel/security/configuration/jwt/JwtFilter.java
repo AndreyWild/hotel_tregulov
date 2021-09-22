@@ -2,7 +2,6 @@ package com.senla.hotel.security.configuration.jwt;
 
 import com.senla.hotel.security.configuration.CustomUserDetails;
 import com.senla.hotel.security.service.CustomUserDetailsService;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

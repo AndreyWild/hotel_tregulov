@@ -1,16 +1,12 @@
 package com.senla.hotel.security.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Data
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "user_table")
+@Data
 public class UserEntity {
 
     @Id
