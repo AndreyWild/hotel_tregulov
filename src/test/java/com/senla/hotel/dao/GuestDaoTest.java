@@ -1,8 +1,10 @@
 package com.senla.hotel.dao;
 
 import com.senla.hotel.model.entities.Guest;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +49,12 @@ public class GuestDaoTest {
         given(guestDao.getById(GUEST_ID)).willReturn(guest);
         Guest argument = guestDao.getById(GUEST_ID);
         assertThat(argument).isEqualTo(new Guest("Test", 50));
+    }
 
+    @Test(expected = RuntimeException.class)
+    public void getByIdShouldReturnNull() {
+        given(guestDao.getById(anyLong())).willThrow(RuntimeException.class);
+        guestDao.getById(anyLong());
     }
 
     @Test
@@ -57,6 +65,12 @@ public class GuestDaoTest {
         List<Guest> expected = guestDao.getAll();
         assertEquals(expected, users);
         verify(guestDao).getAll();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldReturnExceptInsteadGuests() {
+        given(guestDao.getAll()).willThrow(RuntimeException.class);
+        guestDao.getAll();
     }
 
     @Test
@@ -90,7 +104,7 @@ public class GuestDaoTest {
     }
 
     @Test(expected = RuntimeException.class)
-    public void should_throw_exception_when_user_doesnt_exist() {
+    public void shouldThrowExceptionWhenUserDoesntExist() {
         Guest guest = new Guest();
         guest.setId(89L);
         guest.setName("Test Name");
@@ -113,5 +127,12 @@ public class GuestDaoTest {
     public void getGenericClass() {
         given(guestDao.getGenericClass()).willReturn(Guest.class);
         assertEquals(guestDao.getGenericClass(), Guest.class);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void should_throw_exception_when_user_doesnt_exist() {
+//        Guest newGuest = new Guest();
+//        when(guestDao.update(newGuest)).willThrow(RuntimeException.class);
+//        guestDao.update(newGuest);
     }
 }

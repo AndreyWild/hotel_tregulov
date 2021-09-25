@@ -21,12 +21,24 @@ public abstract class AbstractDao<T extends AEntity> implements IGenericDao<T> {
 
     @Override
     public T getById(Long id) {
-        return getCurrentSession().get(getGenericClass(), id);
+        T entity = getCurrentSession().get(getGenericClass(), id);
+        if (entity == null) {
+            throw new RuntimeException();
+        } else {
+            return entity;
+        }
+        //return getCurrentSession().get(getGenericClass(), id);
     }
 
     @Override
     public List<T> getAll() {
-        return getCurrentSession().createQuery("from " + getGenericClass().getSimpleName(), getGenericClass()).list();
+        List<T> entities = getCurrentSession().createQuery("from " + getGenericClass().getSimpleName(), getGenericClass()).list();
+        if (entities == null) {
+            throw new RuntimeException();
+        } else {
+            return entities;
+        }
+        //return getCurrentSession().createQuery("from " + getGenericClass().getSimpleName(), getGenericClass()).list();
     }
 
     @Override
