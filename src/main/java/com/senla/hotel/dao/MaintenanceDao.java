@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MaintenanceDao extends AbstractDao<Maintenance> implements IMaintenanceDao {
+
     @Override
     Class<Maintenance> getGenericClass() {
         return Maintenance.class;

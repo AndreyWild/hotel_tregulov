@@ -1,6 +1,5 @@
 package com.senla.hotel.controller;
 
-import com.senla.hotel.api.controller.IGenericController;
 import com.senla.hotel.api.service.IGenericService;
 import com.senla.hotel.model.entities.AEntity;
 import lombok.extern.log4j.Log4j;
@@ -45,6 +44,12 @@ public abstract class AbstractController<T extends AEntity, Y extends IGenericSe
         log.info(String.format("Received request (DELETE): /%s/" + id, getEndPoint()));
         service.deleteById(id);
         return "Entity with ID = " + id + " was deleted";
+    }
+
+    @GetMapping("/sort/{field}")
+    public List<T> getAllSortedByField(@PathVariable String field) {
+        log.info(String.format("Received request (GET): /%s/sort/" + field, getEndPoint()));
+        return service.getSortedListByField(field);
     }
 
     protected abstract String getEndPoint();

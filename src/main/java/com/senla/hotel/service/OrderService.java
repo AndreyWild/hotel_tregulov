@@ -72,4 +72,10 @@ public class OrderService implements IOrderService {
     public void update(OrderDto entity) {
         orderDao.update(modelMapper.map(entity, Order.class));
     }
+
+    @Override
+    public List<OrderDto> getSortedListByField(String fieldName) {
+        return orderDao.getSortedListByField(fieldName).stream()
+                .map(room -> modelMapper.map(room, OrderDto.class)).collect(Collectors.toList());
+    }
 }

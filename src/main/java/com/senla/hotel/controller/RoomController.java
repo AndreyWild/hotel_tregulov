@@ -21,37 +21,24 @@ public class RoomController extends AbstractController<RoomDto, IRoomService>{
         return ENDPOINT;
     }
 
-//    private final IRoomService roomService;
-//
-//    @GetMapping
-//    public List<RoomDto> getAll() {
-//        log.info("Received request (GET): /room");
-//        return roomService.getAll();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public RoomDto getById(@PathVariable Long id) {
-//        log.info("Received request (GET): /rooms/" + id);
-//        return roomService.getById(id);
-//    }
-//
-//    @PostMapping
-//    public RoomDto save(@RequestBody RoomDto roomDto) {
-//        log.info("Received request (POST): /rooms");
-//        return roomService.save(roomDto);
-//    }
-//
-//    @PutMapping
-//    public RoomDto update(@RequestBody RoomDto roomDto) {
-//        log.info("Received request (PUT): /rooms");
-//        roomService.update(roomDto);
-//        return roomDto;
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public String delete(@PathVariable Long id) {
-//        log.info("Received request (DELETE): /rooms/" + id);
-//        roomService.deleteById(id);
-//        return "Room with ID = " + id + " was deleted";
-//    }
+    private final IRoomService roomService;
+
+    @GetMapping("/sorted/number_v2")
+    public List<RoomDto> getAllSortedByNumber() {
+        log.info("Received request (GET): /rooms/sorted/number");
+        return roomService.getSortedListByField("number");
+    }
+
+    @GetMapping("/sorted/capacity_v2")
+    public List<RoomDto> getAllSortedByCapacity() {
+        log.info("Received request (GET): /rooms/sorted/capacity");
+        return roomService.getSortedListByField("capacity");
+    }
+
+    @GetMapping("/sorted/price_v2")
+    public List<RoomDto> getAllSortedByPrice() {
+        log.info("Received request (GET): /rooms/sorted/price");
+        return roomService.getSortedListByField("price");
+    }
+
 }

@@ -21,4 +21,6 @@ public interface IGenericDao<T extends AEntity> {
     void deleteAll();
 
     void update(T entity);
+
+    List<T> getSortedListByField(String field);
 }
