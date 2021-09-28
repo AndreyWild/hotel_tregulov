@@ -15,7 +15,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,11 +104,8 @@ public class GuestDaoTest {
 
     @Test(expected = RuntimeException.class)
     public void shouldThrowExceptionWhenUserDoesntExist() {
-        Guest guest = new Guest();
-        guest.setId(89L);
-        guest.setName("Test Name");
-        given(guestDao.getById(guest.getId())).willThrow(RuntimeException.class);
-        guestDao.deleteById(guest.getId());
+        given(guestDao.getById(GUEST_ID)).willThrow(RuntimeException.class);
+        guestDao.deleteById(GUEST_ID);
     }
 
     @Test
@@ -129,10 +125,4 @@ public class GuestDaoTest {
         assertEquals(guestDao.getGenericClass(), Guest.class);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void should_throw_exception_when_user_doesnt_exist() {
-//        Guest newGuest = new Guest();
-//        when(guestDao.update(newGuest)).willThrow(RuntimeException.class);
-//        guestDao.update(newGuest);
-    }
 }
