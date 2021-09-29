@@ -1,122 +1,141 @@
 package com.senla.hotel.service;
 
+import com.senla.hotel.api.dao.IGuestDao;
 import com.senla.hotel.api.service.IGuestService;
 import com.senla.hotel.dto.GuestDto;
+import com.senla.hotel.exceptions.NoSuchEntityException;
 import com.senla.hotel.model.entities.Guest;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GuestServiceTest {
+@ExtendWith(MockitoExtension.class)
+class GuestServiceTest {
 
-    private IGuestService guestService= Mockito.mock(GuestService.class);
-    private static final Long GUEST_ID = 1L;
-    private GuestDto guestDtoGeneral;
+    private IGuestService guestService;
+    @Mock
+    private IGuestDao guestDao;
+    @Mock
+    private ModelMapper modelMapper;
+    @Mock
+    private Guest guest;
+    @Mock
+    private GuestDto guestDto;
 
-    @Before
-    public void getUp() {
-        MockitoAnnotations.initMocks(this);
-        this.guestDtoGeneral = new GuestDto();
-        guestDtoGeneral.setName("Test");
-        guestDtoGeneral.setAge(50);
+    private static final Long ID = 1L;
 
+    @BeforeEach
+    void setUp() {
+
+        guestService = new GuestService(guestDao, modelMapper);
+        guest.setId(ID);
+        guest.setName("test");
+        guest.setAge(15);
+        guestDto.setId(ID);
+        guestDto.setName("test");
+        guestDto.setAge(15);
     }
 
     @Test
-    public void whenSaveGuestShouldReturnUser() {
-        GuestDto guestDto = new GuestDto();
-        guestDto.setName("Test Name");
-        when(guestService.save(ArgumentMatchers.any(GuestDto.class))).thenReturn(guestDto);
-        GuestDto created = guestService.save(guestDto);
-        assertThat(created.getName()).isSameAs(guestDto.getName());
-        verify(guestService).save(guestDto);
+    public void whenSaveGuestShouldReturnGuestDto() {
+        when(guestDao.save(ArgumentMatchers.any(Guest.class))).thenReturn(guest);
+        when(modelMapper.map(guestDto, Guest.class)).thenReturn(guest);
+        when(modelMapper.map(guest, GuestDto.class)).thenReturn(guestDto);
+        GuestDto result = guestService.save(guestDto);
+        assertEquals(result, guestDto);
+        verify(guestDao).save(guest);
     }
 
     @Test
-    public void getByIdShouldReturnTrue() {
-        GuestDto guestDto = new GuestDto();
-        guestDto.setName("Test");
-        guestDto.setAge(50);
-        given(guestService.getById(GUEST_ID)).willReturn(guestDto);
-        GuestDto argument = guestService.getById(GUEST_ID);
-        assertThat(argument).isEqualTo(guestDto);
+    void getByIdShouldReturnGuestDto() {
+        when(guestDao.getById(anyLong())).thenReturn(guest);
+        when(modelMapper.map(guest, GuestDto.class)).thenReturn(guestDto);
+        GuestDto result = guestService.getById(anyLong());
+        assertEquals(result, guestDto);
+        verify(guestDao).getById(anyLong());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void getByIdShouldReturnNull() {
-        given(guestService.getById(anyLong())).willThrow(RuntimeException.class);
-        guestService.getById(anyLong());
+    @Test
+    void getByIdShouldReturnNull() {
+        when(guestDao.getById(anyLong())).thenReturn(null);
+        assertThrows(NoSuchEntityException.class, () -> {
+            guestService.getById(anyLong());
+        });
+        verify(guestDao).getById(anyLong());
     }
 
     @Test
     public void shouldReturnAllGuestFirst() {
-        List<GuestDto> usersDto = new ArrayList();
-        usersDto.add(new GuestDto());
-        given(guestService.getAll()).willReturn(usersDto);
+        List<Guest> users = new ArrayList();
+        users.add(guest);
+        List<GuestDto> guestDtos = new ArrayList<>();
+        guestDtos.add(guestDto);
+        when(modelMapper.map(guest, GuestDto.class)).thenReturn(guestDto);
+        when(guestDao.getAll()).thenReturn(users);
         List<GuestDto> expected = guestService.getAll();
-        assertEquals(expected, usersDto);
-        verify(guestService).getAll();
+        assertEquals(expected, guestDtos);
+        verify(guestDao).getAll();
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldReturnExceptInsteadGuests() {
-        given(guestService.getAll()).willThrow(RuntimeException.class);
-        guestService.getAll();
+        given(guestDao.getAll()).willThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> {
+            guestService.getAll();
+        });
+        verify(guestDao).getAll();
     }
 
     @Test
     public void shouldReturnAllGuestSecond() {
         List<Guest> guests = new ArrayList();
-        guests.add(new Guest());
-        given(guestService.findAll()).willReturn(guests);
-        List<Guest> expected = guestService.findAll();
+        guests.add(guest);
+        given(guestDao.findAll()).willReturn(guests);
+        List<Guest> expected = guestDao.findAll();
         assertEquals(expected, guests);
-        verify(guestService).findAll();
+        verify(guestDao).findAll();
     }
+
 
     @Test
     public void whenGivenGuestShouldDeleteGuestIfFound() {
-        Guest guest = new Guest();
-        guest.setName("Test Name");
-        guest.setId(GUEST_ID);
-        when(guestService.getById(guest.getId())).thenReturn(guestDtoGeneral);
         guestService.delete(guest);
-        verify(guestService).delete(guest);
+        verify(guestDao).delete(guest);
     }
 
     @Test
     public void whenGivenIdShouldDeleteGuestIfFound() {
-        Guest guest = new Guest();
-        guest.setName("Test Name");
-        guest.setId(GUEST_ID);
-        when(guestService.getById(guest.getId())).thenReturn(guestDtoGeneral);
+        when(guestDao.getById(guest.getId())).thenReturn(guest);
         guestService.deleteById(guest.getId());
-        verify(guestService).deleteById(guest.getId());
+        verify(guestDao).deleteById(guest.getId());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void shouldThrowExceptionWhenUserDoesntExist() {
-        given(guestService.getById(GUEST_ID)).willThrow(RuntimeException.class);
-        guestService.deleteById(GUEST_ID);
+    @Test
+    void shouldThrowExceptionWhenGuestDoesntExist() {
+        when(guestDao.getById(anyLong())).thenReturn(null);
+        assertThrows(NoSuchEntityException.class, () -> {
+            guestService.getById(anyLong());
+        });
     }
 
     @Test
     public void update() {
-        GuestDto newUser = new GuestDto();
-        guestService.update(newUser);
-        verify(guestService).update(newUser);
+        when(modelMapper.map(guestDto, Guest.class)).thenReturn(guest);
+        guestService.update(guestDto);
+        verify(guestDao).update(guest);
     }
-
 }
