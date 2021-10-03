@@ -73,4 +73,10 @@ public class RoomService implements IRoomService {
     public void update(RoomDto entity) {
         roomDao.update(modelMapper.map(entity, Room.class));
     }
+
+    @Override
+    public List<RoomDto> getSortedListByField(String fieldName) {
+        return roomDao.getSortedListByField(fieldName).stream()
+                .map(room -> modelMapper.map(room, RoomDto.class)).collect(Collectors.toList());
+    }
 }

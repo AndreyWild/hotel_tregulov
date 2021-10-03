@@ -1,5 +1,6 @@
 package com.senla.hotel.api.service;
 
+import com.senla.hotel.dto.GuestDto;
 import com.senla.hotel.model.entities.AEntity;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface IGenericService<T, Y extends AEntity> {
     void deleteAll();
 
     void update(Y entity);
+
+    List<Y> getSortedListByField(String fieldName);
 }

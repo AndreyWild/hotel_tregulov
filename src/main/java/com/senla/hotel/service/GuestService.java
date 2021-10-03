@@ -72,4 +72,11 @@ public class GuestService implements IGuestService {
     public void update(GuestDto entity) {
         guestDao.update(modelMapper.map(entity, Guest.class));
     }
+
+    @Override
+    public List<GuestDto> getSortedListByField(String fieldName){
+        return guestDao.getSortedListByField(fieldName).stream()
+                .map(guest -> modelMapper.map(guest, GuestDto.class)).collect(Collectors.toList());
+    }
+
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class RoomDao extends AbstractDao<Room> implements IRoomDao {
+
     @Override
     Class<Room> getGenericClass() {
         return Room.class;

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class OrderDao extends AbstractDao<Order> implements IOrderDao {
+
     @Override
     Class<Order> getGenericClass() {
         return Order.class;

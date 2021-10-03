@@ -73,4 +73,10 @@ public class MaintenanceService implements IMaintenanceService {
     public void update(MaintenanceDto entity) {
         maintenanceDao.update(modelMapper.map(entity, Maintenance.class));
     }
+
+    @Override
+    public List<MaintenanceDto> getSortedListByField(String fieldName) {
+        return maintenanceDao.getSortedListByField(fieldName).stream()
+                .map(maintenance -> modelMapper.map(maintenance, MaintenanceDto.class)).collect(Collectors.toList());
+    }
 }
